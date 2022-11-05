@@ -6,7 +6,6 @@ function Banner({ handleBoardSize, boardSize, winner, handleNewGame }: { winner:
     const [localBoardSize, setLocalBoardSize] = useState(boardSize);
 
     const handleLocalBoardSize: ChangeEventHandler = (event) => {
-        console.log(event);
         // @ts-ignore
         if (+event.currentTarget.value <= 0) return;
 
@@ -18,6 +17,7 @@ function Banner({ handleBoardSize, boardSize, winner, handleNewGame }: { winner:
 
     return (
         <div className="banner">
+            <h1>Tic-Tac Toe</h1>
             <div className="winner">{winner && <div>{winner} is the winner!</div>}</div>
             <button className="new-game" onClick={handleNewGame}>Start New Game</button>
             <div>

@@ -7,15 +7,19 @@ import Banner from "./Banner";
 import type { SquareType } from "./types";
 
 function App() {
-  const [boardSize, setBoardSize] = useState(9);
-  const [squares, setSquares] = useState(Array(boardSize).fill(null));
-  const [playerTurn, setPlayerTurn] = useState("X");
-  const [winner, setWinner] = useState(null);
+  const [boardSize, setBoardSize] = useState(!Number.isNaN(parseInt(localStorage.getItem("boardSize") as string)) ? parseInt(localStorage.getItem("boardSize") as string) : 9);
+  const [squares, setSquares] = useState(localStorage.getItem("squares") ? JSON.parse(localStorage.getItem("squares") || "[]") : Array(boardSize).fill(null));
+  const [playerTurn, setPlayerTurn] = useState(localStorage.getItem("playerTurn") || "X");
+  const [winner, setWinner] = useState(localStorage.getItem("winner") || null);
 
   const handleBoardSize = (i: number) => {
     if (!Number.isInteger(Math.sqrt(i))) return;
     setBoardSize(i);
     setSquares(Array(i).fill(null));
+    localStorage.setItem("boardSize", JSON.stringify(i));
+    localStorage.removeItem("squares");
+    localStorage.removeItem("playerTurn");
+    localStorage.removeItem("winner");
   };
 
   const handleSquareClick = (i: number) => {
@@ -26,19 +30,26 @@ function App() {
     squaresCopy[i] = playerTurn;
 
     setSquares(squaresCopy);
+    localStorage.setItem("squares", JSON.stringify(squaresCopy));
     const result = getWinner(squaresCopy, boardSize);
     if (result) {
       // @ts-ignore
       setWinner(result);
+      localStorage.setItem("winnner", result);
       return;
     }
 
     setPlayerTurn(playerTurn === "X" ? "O" : "X");
+    localStorage.setItem("playerTurn", playerTurn === "X" ? "O" : "X");
   };
 
   const handleNewGame = () => {
     setWinner(null);
     setSquares(Array(boardSize).fill(null));
+    localStorage.removeItem("squares");
+    localStorage.removeItem("playerTurn");
+    localStorage.removeItem("boardSize");
+    localStorage.removeItem("winner");
   };
 
   const style = {'--squares': Math.sqrt(boardSize)};
